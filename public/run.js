@@ -18,9 +18,27 @@ if (Recorder.isRecordingSupported()) {
     bt.onmousedown = () => {
       bt.innerText = 'gravando 1'
 
+      const rec = new Recorder(options)
+      rec.start()
+        .then(() => console.log('1, 2, 3... GRAVANDO'))
+        .catch(console.error)
+
+      rec.ondataavailable = typedArray => {
+        const blob = new Blob( [typedArray], { type: 'audio/ogg' } )
+        const url = URL.createObjectURL( blob )
+
+        console.dir({ url })
+      }
+      // rec.onstart = () => {}
+      // rec.onstop = () => {}
+      // rec.onpause = () => {}
+      // rec.onresume = () => {}
+
       // quando solta o botão
       bt.onmouseup = () => {
         bt.innerText = 'gravando 0'
+
+        rec.stop()
       }
     }
 }
