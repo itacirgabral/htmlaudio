@@ -1,40 +1,26 @@
-if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
-  console.log('getUserMedia supported.');
+/*
+// caso precise escolher qual mic e como ligar/desligar eles
+const AudioContext = window.AudioContext || window.webkitAudioContext;
+const sourceNode = await navigator.mediaDevices.getUserMedia({ audio : true }).then( ( stream ) => {
+  const context = new AudioContext();
+  return context.createMediaStreamSource( stream );
+});
+*/
+
+const options = {
+  encoderPath: "encoderWorker.min.js"
+  // sourceNode // optional An Instance of MediaStreamAudioSourceNode to use. If a sourceNode is provided, then closing the stream and audioContext will need to be managed by the implementation.
+}
+
+if (Recorder.isRecordingSupported()) {
   const bt = document.getElementById('bt')
-  
-  // quando aperta o botão
-  bt.onmousedown = () => {
-    bt.innerText = 'gravando 1'
+    // quando aperta o botão
+    bt.onmousedown = () => {
+      bt.innerText = 'gravando 1'
 
-    navigator
-      .mediaDevices
-      .getUserMedia({ audio: true })
-      .then(stream => {
-        const mediaRecorder = new MediaRecorder(stream)
-        const chunks = []
-
-        mediaRecorder.ondataavailable = e => {
-          chunks.push(e.data)
-        }
-
-        mediaRecorder.onstop = () => {
-          const blob = new Blob(chunks, { 'type' : 'audio/ogg; codecs=opus' })
-          const url = window.URL.createObjectURL(blob)
-          console.dir({ url, blob })
-        }
-
-        mediaRecorder.start()
-
-        // solta
-        bt.onmouseup = () => {
-          bt.innerText = 'gravando 0'
-          mediaRecorder.stop()
-        }
-      })
-      .catch(err => {
-        console.error('The following getUserMedia error occured: ' + err);
-      })
-  }
-} else {
-  console.log('getUserMedia not supported on your browser!');
+      // quando solta o botão
+      bt.onmouseup = () => {
+        bt.innerText = 'gravando 0'
+      }
+    }
 }
